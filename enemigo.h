@@ -1,12 +1,20 @@
 #pragma once
 
-class enemigo
-{
-public:
-	enemigo(int);
-	int getHp();
-	void takeDamage(int amount);
-private:
-	int mHp;
-};
+#include <SFML/Graphics.hpp>
 
+class Enemigo {
+public:
+    // Constructor
+    Enemigo(sf::Texture& texture, float scale);
+
+    // Funciones miembro
+    void actualizar();
+    void morir();
+    bool estaVivo() const;
+    sf::Sprite& getSprite();
+
+private:
+    sf::Sprite sprite;
+    bool vivo;
+    sf::Clock temporizador;
+};

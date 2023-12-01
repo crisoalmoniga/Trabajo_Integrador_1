@@ -1,20 +1,33 @@
-#include "enemigo.h"
+#include "Enemigo.h"
 
-
-enemigo::enemigo(int hp) {
-	mHp = hp;
+// Constructor
+Enemigo::Enemigo(sf::Texture& texture, float scale) : vivo(true) {
+    sprite.setTexture(texture);
+    sprite.setScale(scale, scale);
+    sprite.setPosition(rand() % 800, rand() % 800);
+    temporizador.restart();
 }
 
-int enemigo::getHp(){
-	return mHp;
+// Función para actualizar la lógica del enemigo
+void Enemigo::actualizar() {
+    if (vivo && temporizador.getElapsedTime().asSeconds() > 0.9) {
+        // Realiza alguna lógica aquí cuando ha pasado 0.9 segundos
+        temporizador.restart();  // Reinicia el temporizador
+    }
 }
 
-void enemigo::takeDamage(int amount){
-	mHp -= amount;
-
-	if (mHp < 0) {
-		mHp = 0;
-	}
-
-
+// Función para marcar al enemigo como muerto
+void Enemigo::morir() {
+    vivo = false;
 }
+
+// Función para verificar si el enemigo está vivo
+bool Enemigo::estaVivo() const {
+    return vivo;
+}
+
+// Función para obtener el sprite del enemigo
+sf::Sprite& Enemigo::getSprite() {
+    return sprite;
+}
+

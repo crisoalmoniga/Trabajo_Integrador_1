@@ -130,11 +130,15 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="enemigo.cpp" />
+    <ClCompile Include="Enemigo.cpp" />
     <ClCompile Include="Main.cpp" />
+    <ClCompile Include="Mira.cpp" />
+    <ClCompile Include="Puntaje.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="enemigo.h" />
+    <ClInclude Include="Enemigo.h" />
+    <ClInclude Include="Mira.h" />
+    <ClInclude Include="Puntaje.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

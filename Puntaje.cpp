@@ -1,21 +1,21 @@
 #include "Puntaje.h"
 
-// Implementación del constructor
-Puntaje::Puntaje() : puntos(0) {}
+// Constructor
+Puntaje::Puntaje() : puntos(0) {
+    // Inicializa los puntos a 0 al construir un objeto Puntaje
+}
 
-// Implementación de la función getPuntos
+// Función para obtener los puntos actuales
 int Puntaje::getPuntos() const {
     return puntos;
 }
 
-// Implementación de la función agregarPuntos
+// Función para agregar puntos
 void Puntaje::agregarPuntos(int cantidad) {
-    if (cantidad > 0) {
-        puntos += cantidad;
-    }
+    puntos += cantidad;
 }
 
-// Implementación de la función resetearPuntos
+// Función para resetear los puntos a 0
 void Puntaje::resetearPuntos() {
     puntos = 0;
 }

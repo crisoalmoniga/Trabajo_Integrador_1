@@ -6,7 +6,7 @@ public:
     // Constructor
     Puntaje();
 
-    // Funciones miembro
+    // Funciones
     int getPuntos() const;
     void agregarPuntos(int cantidad);
     void resetearPuntos();
@@ -15,3 +15,4 @@ private:
     // Variable miembro para almacenar los puntos
     int puntos;
 };
+
