@@ -1,28 +1,11 @@
 #include "Mira.h"
 
 // Constructor
-Mira::Mira() {}
+Mira::Mira(sf::Texture texture) {
 
-// Función para cargar la textura desde un archivo
-void Mira::cargarTextura(const std::string& nombreArchivo) {
-    std::string rutaCompleta = "D:\\Universidad - Cris\\Videojuegos\\Universidad del Litoral\\MAVI\\Trabajo_Integrador_1\\Assets\\" + nombreArchivo + ".png";
+	sprite.setTexture(texture);
 
-    if (!textura.loadFromFile(rutaCompleta))
-        throw std::runtime_error("Error al cargar la textura desde " + rutaCompleta);
+	sprite.setScale(0.2f,0.2f);
 
-    sprite.setTexture(textura);
-}
-
-// Función para centrar el sprite en la ventana
-void Mira::centrarEnVentana(const sf::RenderWindow& ventana) {
-    sprite.setPosition(
-        (ventana.getSize().x - sprite.getGlobalBounds().width) / 2,
-        (ventana.getSize().y - sprite.getGlobalBounds().height) / 2
-    );
-}
-
-// Función para dibujar el sprite en una ventana
-void Mira::dibujar(sf::RenderWindow& ventana) {
-    ventana.draw(sprite);
 }
 

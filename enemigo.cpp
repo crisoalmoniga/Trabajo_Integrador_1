@@ -30,4 +30,3 @@ bool Enemigo::estaVivo() const {
 sf::Sprite& Enemigo::getSprite() {
     return sprite;
 }
-
