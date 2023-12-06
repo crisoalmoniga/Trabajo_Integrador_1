@@ -1,20 +1,30 @@
 #include <SFML/Graphics.hpp>
 #include <SFML/Window.hpp>
 #include <cstdlib>
+#include <ctime>
 #include "Enemigo.h"
 
+enum GameState {
+    MainMenu,
+    InGame,
+    GameOver
+};
+
 int main() {
-    srand(time(0));
+    srand(static_cast<unsigned int>(time(0)));
 
     sf::Texture miraTextura;
     sf::Texture fondoTexture;
     sf::Texture enemigoTexture;
+    sf::Texture inocenteTexture;
+    sf::Texture inicioTexture;
 
     miraTextura.loadFromFile("mira.png");
     fondoTexture.loadFromFile("fondo.png");
     enemigoTexture.loadFromFile("enemigo.png");
+    inocenteTexture.loadFromFile("inocente.png");  // Cambia la textura del inocente según sea necesario
+    inicioTexture.loadFromFile("inicio.png");
 
-    // Configuración del sprite de la mira
     sf::Sprite miraSprite(miraTextura);
     miraSprite.setScale(0.2f, 0.2f);
     miraSprite.setOrigin(miraSprite.getGlobalBounds().width / 2, miraSprite.getGlobalBounds().height / 2);
@@ -22,15 +32,17 @@ int main() {
     sf::RenderWindow App(sf::VideoMode(1024, 768), "La mano en la lata");
 
     sf::Sprite fondoSprite(fondoTexture);
+    sf::Sprite inicioSprite(inicioTexture);
 
-    // Define la posición específica del enemigo (ajusta según sea necesario)
-    sf::Vector2f enemigoPosition(500, 550);
+    int tiempoSpawn = 5000;
+    int tiempoDesaparicion = 10000;
+    int tiempoEspera = 8000;  // Tiempo de espera entre desaparición y aparición de enemigos
 
-    // Tiempo de spawn y tiempo de desaparición en milisegundos (ajusta según sea necesario)
-    int tiempoSpawn = 600;
-    int tiempoDesaparicion = 1000;
+    Enemigo enemigo(enemigoTexture, 1.1f, sf::Vector2f(450, 450), tiempoSpawn, tiempoDesaparicion);
+    Enemigo inocente(inocenteTexture, 1.1f, sf::Vector2f(450, 450), tiempoSpawn, tiempoDesaparicion);
 
-    Enemigo enemigo(enemigoTexture, 0.9f, enemigoPosition, tiempoSpawn, tiempoDesaparicion);
+    sf::Clock esperaClock;  // Reloj para gestionar el tiempo de espera
+    GameState gameState = GameState::MainMenu;
 
     while (App.isOpen()) {
         sf::Event event;
@@ -42,33 +54,53 @@ int main() {
                 miraSprite.setPosition(event.mouseMove.x, event.mouseMove.y);
             }
             else if (event.type == sf::Event::MouseButtonPressed && event.mouseButton.button == sf::Mouse::Left) {
-                // Verifica si el clic del mouse ocurre sobre el enemigo
-                sf::Vector2i mousePosition = sf::Mouse::getPosition(App);
-                sf::Vector2f worldPosition = App.mapPixelToCoords(mousePosition);
+                if (gameState == GameState::MainMenu) {
+                    gameState = GameState::InGame;
+                }
+                else {
+                    sf::Vector2i mousePosition = sf::Mouse::getPosition(App);
+                    sf::Vector2f worldPosition = App.mapPixelToCoords(mousePosition);
 
-                if (enemigo.isClicked(worldPosition)) {
-                    // Si se hizo clic en el enemigo, desaparece
-                    enemigo.destroy();
+                    if (enemigo.isClicked(worldPosition)) {
+                        enemigo.destroy();
+                        esperaClock.restart();  // Reinicia el temporizador después de destruir un enemigo
+                    }
+                    else if (inocente.isClicked(worldPosition)) {
+                        inocente.destroy();
+                        esperaClock.restart();  // Reinicia el temporizador después de destruir el "inocente"
+                    }
                 }
             }
         }
 
-        enemigo.update();  // Actualiza la lógica del enemigo
-
         App.clear();
 
-        // Escala el fondo para que ocupe toda la ventana
-        fondoSprite.setScale(
-            static_cast<float>(App.getSize().x) / fondoSprite.getTexture()->getSize().x,
-            static_cast<float>(App.getSize().y) / fondoSprite.getTexture()->getSize().y
-        );
+        if (gameState == GameState::MainMenu) {
+            // Escalar la textura de inicio para ajustarla al tamaño de la ventana
+            inicioSprite.setScale(static_cast<float>(App.getSize().x) / inicioSprite.getTexture()->getSize().x,
+                static_cast<float>(App.getSize().y) / inicioSprite.getTexture()->getSize().y);
+            App.draw(inicioSprite);
+        }
+        else if (gameState == GameState::InGame) {
+            fondoSprite.setScale(static_cast<float>(App.getSize().x) / fondoSprite.getTexture()->getSize().x,
+                static_cast<float>(App.getSize().y) / fondoSprite.getTexture()->getSize().y);
+            App.draw(fondoSprite);
 
-        App.draw(fondoSprite);
+            // Decidir aleatoriamente qué enemigo mostrar en esta iteración
+            bool mostrarEnemigo = rand() % 2 == 0;
 
-        // Dibuja el enemigo
-        enemigo.draw(App);
+            if (mostrarEnemigo) {
+                enemigo.update();
+                enemigo.draw(App);
+            }
+            else {
+                inocente.update();
+                inocente.draw(App);
+            }
 
-        App.draw(miraSprite);
+            App.draw(miraSprite);
+        }
+
         App.display();
     }
 
