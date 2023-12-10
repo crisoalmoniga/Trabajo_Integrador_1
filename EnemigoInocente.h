@@ -2,9 +2,9 @@
 
 #include <SFML/Graphics.hpp>
 
-class Enemigo {
+class EnemigoInocente {
 public:
-    Enemigo(sf::Texture& textureEnemigo, sf::Texture& textureInocente, sf::Vector2f posiciones[]);
+    EnemigoInocente(sf::Texture& textureEnemigo, sf::Texture& textureInocente, sf::Vector2f posiciones[]);
     void cambiarPosicionYTexturaAleatoria();
     sf::Sprite getSprite() const;
 

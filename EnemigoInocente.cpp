@@ -1,13 +1,13 @@
-#include "enemigo.h"
+#include "EnemigoInocente.h"
 #include <cstdlib>
 
-Enemigo::Enemigo(sf::Texture& textureEnemigo, sf::Texture& textureInocente, sf::Vector2f posiciones[])
+EnemigoInocente::EnemigoInocente(sf::Texture& textureEnemigo, sf::Texture& textureInocente, sf::Vector2f posiciones[])
     : textureEnemigo(textureEnemigo), textureInocente(textureInocente), posiciones(posiciones) {
     sprite.setTexture(textureEnemigo);  // Establecer la textura del enemigo por defecto
     sprite.setPosition(this->posiciones[rand() % 6]);  // Posición inicial aleatoria
 }
 
-void Enemigo::cambiarPosicionYTexturaAleatoria() {
+void EnemigoInocente::cambiarPosicionYTexturaAleatoria() {
     // Cambiar a una nueva posición aleatoria
     sprite.setPosition(posiciones[rand() % 6]);
 
@@ -15,6 +15,6 @@ void Enemigo::cambiarPosicionYTexturaAleatoria() {
     sprite.setTexture((rand() % 2 == 0) ? textureEnemigo : textureInocente);
 }
 
-sf::Sprite Enemigo::getSprite() const {
+sf::Sprite EnemigoInocente::getSprite() const {
     return sprite;
 }

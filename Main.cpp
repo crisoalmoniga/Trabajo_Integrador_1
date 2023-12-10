@@ -1,11 +1,12 @@
 #include <SFML/Graphics.hpp>
 #include <cstdlib>
 #include <ctime>
-#include "enemigo.h"
+#include "EnemigoInocente.h"
 
 int main() {
     // Crear la ventana de inicio
-    sf::RenderWindow startWindow(sf::VideoMode(1024, 768), "Inicio");
+    sf::RenderWindow App(sf::VideoMode(1024, 768), "Inicio");
+    App.setFramerateLimit(60);
 
     // Cargar la textura de la pantalla de inicio
     sf::Texture inicioTexture;
@@ -15,19 +16,20 @@ int main() {
 
     // Configurar el sprite de la pantalla de inicio
     sf::Sprite inicioSprite(inicioTexture);
-    inicioSprite.setScale(startWindow.getSize().x / inicioSprite.getLocalBounds().width, startWindow.getSize().y / inicioSprite.getLocalBounds().height);
+    inicioSprite.setScale(App.getSize().x / inicioSprite.getLocalBounds().width, App.getSize().y / inicioSprite.getLocalBounds().height);
 
     // Mostrar la ventana de inicio
-    startWindow.draw(inicioSprite);
-    startWindow.display();
+    App.draw(inicioSprite);
+    App.display();
+
 
     // Esperar hasta que el jugador presione un botón
     bool juegoIniciado = false;
-    while (startWindow.isOpen() && !juegoIniciado) {
+    while (App.isOpen() && !juegoIniciado) {
         sf::Event event;
-        while (startWindow.pollEvent(event)) {
+        while (App.pollEvent(event)) {
             if (event.type == sf::Event::Closed) {
-                startWindow.close();
+                App.close();
             }
             else if (event.type == sf::Event::MouseButtonPressed) {
                 // Iniciar el juego cuando se hace clic
@@ -37,7 +39,7 @@ int main() {
     }
 
     // Cerrar la ventana de inicio
-    startWindow.close();
+    App.close();
 
     // Crear la ventana del juego
     sf::RenderWindow window(sf::VideoMode(1024, 768), "La mano en la lata");
@@ -98,7 +100,7 @@ int main() {
     };
 
     // Inicializar con una posición y textura aleatoria
-    Enemigo enemigo(enemigoTexture, inocenteTexture, posiciones);
+    EnemigoInocente enemigo(enemigoTexture, inocenteTexture, posiciones);
 
     // Bucle principal del juego
     bool juegoTerminado = false;
@@ -174,17 +176,17 @@ int main() {
         window.draw(miraSprite);
 
         // Mostrar puntaje, vidas y enemigos muertos en la ventana
-        sf::Font font;
-        if (font.loadFromFile("EncodeSans-VariableFont_wdth,wght.ttf")) {
-            sf::Text textoPuntaje("Puntaje: " + std::to_string(puntos), font, 30);
+        sf::Font Fuente;
+        if (Fuente.loadFromFile("EncodeSans-VariableFont_wdth,wght.ttf")) {
+            sf::Text textoPuntaje("Puntaje: " + std::to_string(puntos), Fuente, 30);
             textoPuntaje.setPosition(460, 710);
             window.draw(textoPuntaje);
 
-            sf::Text textoVidas("Vidas: " + std::to_string(vidas), font, 30);
+            sf::Text textoVidas("Vidas: " + std::to_string(vidas), Fuente, 30);
             textoVidas.setPosition(40, 710);
             window.draw(textoVidas);
 
-            sf::Text textoEnemigosMuertos("Corruptos muertos: " + std::to_string(enemigosMuertos), font, 30);
+            sf::Text textoEnemigosMuertos("Corruptos muertos: " + std::to_string(enemigosMuertos), Fuente, 30);
             textoEnemigosMuertos.setPosition(730, 710);
             window.draw(textoEnemigosMuertos);
 
