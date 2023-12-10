@@ -1,12 +1,12 @@
 #include <SFML/Graphics.hpp>
 #include <cstdlib>
 #include <ctime>
-#include <chrono>
+#include "enemigo.h"
 
 int main() {
     // Crear la ventana de inicio
     sf::RenderWindow startWindow(sf::VideoMode(1024, 768), "Inicio");
-    
+
     // Cargar la textura de la pantalla de inicio
     sf::Texture inicioTexture;
     if (!inicioTexture.loadFromFile("inicio.png")) {
@@ -41,7 +41,6 @@ int main() {
 
     // Crear la ventana del juego
     sf::RenderWindow window(sf::VideoMode(1024, 768), "La mano en la lata");
-
     // Cargar las texturas de los sprites
     sf::Texture enemigoTexture;
     sf::Texture inocenteTexture;
@@ -99,8 +98,7 @@ int main() {
     };
 
     // Inicializar con una posición y textura aleatoria
-    sprite.setPosition(posiciones[rand() % 6]);
-    sprite.setTexture((rand() % 2 == 0) ? enemigoTexture : inocenteTexture);
+    Enemigo enemigo(enemigoTexture, inocenteTexture, posiciones);
 
     // Bucle principal del juego
     bool juegoTerminado = false;
@@ -119,8 +117,8 @@ int main() {
                 sf::Vector2f worldPosition = window.mapPixelToCoords(mousePosition);
 
                 // Verificar si el clic ocurrió dentro del sprite
-                if (sprite.getGlobalBounds().contains(worldPosition)) {
-                    if (sprite.getTexture() == &enemigoTexture) {
+                if (enemigo.getSprite().getGlobalBounds().contains(worldPosition)) {
+                    if (enemigo.getSprite().getTexture() == &enemigoTexture) {
                         // Sumar puntos por matar al enemigo
                         puntos += 10;
 
@@ -128,19 +126,17 @@ int main() {
                         enemigosMuertos++;
 
                         // Cambiar a una nueva posición y textura aleatoria
-                        sprite.setPosition(posiciones[rand() % 6]);
-                        sprite.setTexture((rand() % 2 == 0) ? enemigoTexture : inocenteTexture);
+                        enemigo.cambiarPosicionYTexturaAleatoria();
 
                         // Reiniciar el temporizador
                         tiempoEnPantalla.restart();
                     }
-                    else if (sprite.getTexture() == &inocenteTexture) {
+                    else if (enemigo.getSprite().getTexture() == &inocenteTexture) {
                         // Restar 1 vida por matar al inocente
                         vidas--;
 
                         // Cambiar a una nueva posición y textura aleatoria
-                        sprite.setPosition(posiciones[rand() % 6]);
-                        sprite.setTexture((rand() % 2 == 0) ? enemigoTexture : inocenteTexture);
+                        enemigo.cambiarPosicionYTexturaAleatoria();
 
                         // Reiniciar el temporizador
                         tiempoEnPantalla.restart();
@@ -156,13 +152,12 @@ int main() {
         // Verificar el tiempo transcurrido
         if (tiempoEnPantalla.getElapsedTime().asSeconds() > tiempoLimite) {
             // Si el sprite es un enemigo, restar 1 vida
-            if (sprite.getTexture() == &enemigoTexture) {
+            if (enemigo.getSprite().getTexture() == &enemigoTexture) {
                 vidas--;
             }
 
             // Cambiar a una nueva posición y textura aleatoria
-            sprite.setPosition(posiciones[rand() % 6]);
-            sprite.setTexture((rand() % 2 == 0) ? enemigoTexture : inocenteTexture);
+            enemigo.cambiarPosicionYTexturaAleatoria();
 
             // Reiniciar el temporizador
             tiempoEnPantalla.restart();
@@ -175,7 +170,7 @@ int main() {
         window.draw(fondoSprite);
 
         // Dibujar los sprites en la ventana
-        window.draw(sprite);
+        window.draw(enemigo.getSprite());
         window.draw(miraSprite);
 
         // Mostrar puntaje, vidas y enemigos muertos en la ventana
