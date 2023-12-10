@@ -82,7 +82,7 @@ int main() {
 
     // Configurar el temporizador
     sf::Clock tiempoEnPantalla;
-    float tiempoLimite = 1.5f;
+    float tiempoLimite = 2.5f;
 
     // Semilla para la generación de números aleatorios
     srand(static_cast<unsigned int>(time(0)));
