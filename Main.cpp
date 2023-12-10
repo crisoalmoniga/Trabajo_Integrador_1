@@ -1,11 +1,12 @@
 #include <SFML/Graphics.hpp>
 #include <cstdlib>
 #include <ctime>
+#include <chrono>
 
 int main() {
     // Crear la ventana de inicio
     sf::RenderWindow startWindow(sf::VideoMode(1024, 768), "Inicio");
-
+    
     // Cargar la textura de la pantalla de inicio
     sf::Texture inicioTexture;
     if (!inicioTexture.loadFromFile("inicio.png")) {
@@ -102,6 +103,9 @@ int main() {
     sprite.setTexture((rand() % 2 == 0) ? enemigoTexture : inocenteTexture);
 
     // Bucle principal del juego
+    bool juegoTerminado = false;
+    sf::Clock tiempoPantallaFinal;
+
     while (window.isOpen()) {
         // Manejar eventos
         sf::Event event;
@@ -204,7 +208,23 @@ int main() {
 
         // Cerrar la ventana si se quedan sin vidas o se alcanzan 10 enemigos eliminados
         if (vidas <= 0 || enemigosMuertos >= 10) {
-            window.close();
+            if (!juegoTerminado) {
+                tiempoPantallaFinal.restart();
+                juegoTerminado = true;
+            }
+
+            // Mostrar la pantalla correspondiente
+            if (enemigosMuertos >= 10) {
+                window.draw(ganasteSprite);
+            }
+            else if (vidas <= 0) {
+                window.draw(perdisteSprite);
+            }
+
+            // Mostrar la ventana durante 10 segundos después de la pantalla final
+            if (tiempoPantallaFinal.getElapsedTime().asSeconds() > 10.0f) {
+                window.close();
+            }
         }
     }
 
