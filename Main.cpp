@@ -47,8 +47,8 @@ int main() {
     sf::Texture inocenteTexture;
     sf::Texture miraTexture;
     sf::Texture fondoTexture;
-    sf::Texture perdisteTexture;  // Nueva textura para la pantalla de derrota
-    sf::Texture ganasteTexture;   // Nueva textura para la pantalla de victoria
+    sf::Texture perdisteTexture;
+    sf::Texture ganasteTexture;
 
     // Manejar error si la carga de la textura falla
     if (!enemigoTexture.loadFromFile("enemigo.png") || !inocenteTexture.loadFromFile("inocente.png") || !miraTexture.loadFromFile("mira.png") || !fondoTexture.loadFromFile("fondo.png") || !perdisteTexture.loadFromFile("perdiste.png") || !ganasteTexture.loadFromFile("ganaste.png")) {
@@ -78,12 +78,12 @@ int main() {
 
     // Inicializar el puntaje, las vidas y el contador de enemigos muertos
     int puntos = 0;
-    int vidas = 999;
+    int vidas = 3;
     int enemigosMuertos = 0;
 
     // Configurar el temporizador
     sf::Clock tiempoEnPantalla;
-    float tiempoLimite = 1.2f;
+    float tiempoLimite = 1.5f;
 
     // Semilla para la generación de números aleatorios
     srand(static_cast<unsigned int>(time(0)));
