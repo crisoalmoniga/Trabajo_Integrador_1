@@ -2,6 +2,7 @@
 #include <cstdlib>
 #include <ctime>
 #include "EnemigoInocente.h"
+#include "Mira.h"
 
 int main() {
     // Crear la ventana de inicio
@@ -22,7 +23,6 @@ int main() {
     App.draw(inicioSprite);
     App.display();
 
-
     // Esperar hasta que el jugador presione un botón
     bool juegoIniciado = false;
     while (App.isOpen() && !juegoIniciado) {
@@ -40,6 +40,7 @@ int main() {
 
     // Cerrar la ventana de inicio
     App.close();
+
 
     // Crear la ventana del juego
     sf::RenderWindow window(sf::VideoMode(1024, 768), "La mano en la lata");
@@ -60,10 +61,8 @@ int main() {
     sf::Sprite sprite;
     sprite.setScale(1.2f, 1.2f);
 
-    // Configurar el sprite de la mira del mouse
-    sf::Sprite miraSprite(miraTexture);
-    miraSprite.setScale(0.2f, 0.2f);
-    miraSprite.setOrigin(miraSprite.getLocalBounds().width / 2, miraSprite.getLocalBounds().height / 2);  // Establecer el origen en el centro
+    // Configurar la mira del mouse
+    Mira mira(miraTexture);
 
     // Configurar el fondo
     sf::Sprite fondoSprite(fondoTexture);
@@ -149,7 +148,7 @@ int main() {
 
         // Actualizar la posición de la mira para que siga al ratón
         sf::Vector2i mousePosition = sf::Mouse::getPosition(window);
-        miraSprite.setPosition(static_cast<float>(mousePosition.x), static_cast<float>(mousePosition.y));
+        mira.setPosition(static_cast<float>(mousePosition.x), static_cast<float>(mousePosition.y));
 
         // Verificar el tiempo transcurrido
         if (tiempoEnPantalla.getElapsedTime().asSeconds() > tiempoLimite) {
@@ -171,9 +170,10 @@ int main() {
         // Dibujar el fondo
         window.draw(fondoSprite);
 
+
         // Dibujar los sprites en la ventana
         window.draw(enemigo.getSprite());
-        window.draw(miraSprite);
+        mira.draw(window);
 
         // Mostrar puntaje, vidas y enemigos muertos en la ventana
         sf::Font Fuente;

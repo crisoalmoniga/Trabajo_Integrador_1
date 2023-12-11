@@ -21,9 +21,15 @@
     <ClCompile Include="EnemigoInocente.cpp">
       <Filter>Archivos de origen</Filter>
     </ClCompile>
+    <ClCompile Include="Mira.cpp">
+      <Filter>Archivos de origen</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="EnemigoInocente.h">
+      <Filter>Archivos de encabezado</Filter>
+    </ClInclude>
+    <ClInclude Include="Mira.h">
       <Filter>Archivos de encabezado</Filter>
     </ClInclude>
   </ItemGroup>
