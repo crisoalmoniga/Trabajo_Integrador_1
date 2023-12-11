@@ -3,25 +3,21 @@
 #include <ctime>
 #include "EnemigoInocente.h"
 #include "Mira.h"
+#include "Pantalla.h"
 
 int main() {
     // Crear la ventana de inicio
     sf::RenderWindow App(sf::VideoMode(1024, 768), "Inicio");
     App.setFramerateLimit(60);
 
-    // Cargar la textura de la pantalla de inicio
-    sf::Texture inicioTexture;
-    if (!inicioTexture.loadFromFile("inicio.png")) {
-        return -1;
-    }
+    // Crear instancias de las pantallas
+    PantallaInicio pantallaInicio("inicio.png");
+    PantallaFondo pantallaFondo("fondo.png");
+    PantallaPerdiste pantallaPerdiste("perdiste.png");
+    PantallaGanaste pantallaGanaste("ganaste.png");
 
-    // Configurar el sprite de la pantalla de inicio
-    sf::Sprite inicioSprite(inicioTexture);
-    inicioSprite.setScale(App.getSize().x / inicioSprite.getLocalBounds().width, App.getSize().y / inicioSprite.getLocalBounds().height);
-
-    // Mostrar la ventana de inicio
-    App.draw(inicioSprite);
-    App.display();
+    // Mostrar la pantalla de inicio
+    pantallaInicio.mostrar(App);
 
     // Esperar hasta que el jugador presione un botón
     bool juegoIniciado = false;
