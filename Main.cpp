@@ -10,7 +10,7 @@ int main() {
     sf::RenderWindow App(sf::VideoMode(1024, 768), "Inicio");
     App.setFramerateLimit(60);
 
-    // Crear instancias de las pantallas
+    // Instancias de clases para manejar pantallas del juego
     PantallaInicio pantallaInicio("inicio.png");
     PantallaFondo pantallaFondo("fondo.png");
     PantallaPerdiste pantallaPerdiste("perdiste.png");
@@ -19,28 +19,26 @@ int main() {
     // Mostrar la pantalla de inicio
     pantallaInicio.mostrar(App);
 
-    // Esperar hasta que el jugador presione un botón
     bool juegoIniciado = false;
     while (App.isOpen() && !juegoIniciado) {
         sf::Event event;
         while (App.pollEvent(event)) {
+            // Manejar eventos de la ventana de inicio
             if (event.type == sf::Event::Closed) {
                 App.close();
             }
             else if (event.type == sf::Event::MouseButtonPressed) {
-                // Iniciar el juego cuando se hace clic
                 juegoIniciado = true;
             }
         }
     }
 
-    // Cerrar la ventana de inicio
     App.close();
 
-
-    // Crear la ventana del juego
+    // Crear la ventana principal del juego
     sf::RenderWindow window(sf::VideoMode(1024, 768), "La mano en la lata");
-    // Cargar las texturas de los sprites
+
+    // Cargar texturas necesarias
     sf::Texture enemigoTexture;
     sf::Texture inocenteTexture;
     sf::Texture miraTexture;
@@ -48,132 +46,107 @@ int main() {
     sf::Texture perdisteTexture;
     sf::Texture ganasteTexture;
 
-    // Manejar error si la carga de la textura falla
     if (!enemigoTexture.loadFromFile("enemigo.png") || !inocenteTexture.loadFromFile("inocente.png") || !miraTexture.loadFromFile("mira.png") || !fondoTexture.loadFromFile("fondo.png") || !perdisteTexture.loadFromFile("perdiste.png") || !ganasteTexture.loadFromFile("ganaste.png")) {
-        return -1;
+        return -1; // Salir si hay un error al cargar alguna textura
     }
 
-    // Configurar el sprite principal
+    // Configurar propiedades de un sprite
     sf::Sprite sprite;
     sprite.setScale(1.2f, 1.2f);
 
-    // Configurar la mira del mouse
+    // Instancia de la clase Mira
     Mira mira(miraTexture);
 
-    // Configurar el fondo
+    // Configurar sprites para el fondo, pantalla de derrota y pantalla de victoria
     sf::Sprite fondoSprite(fondoTexture);
     fondoSprite.setScale(window.getSize().x / fondoSprite.getLocalBounds().width, window.getSize().y / fondoSprite.getLocalBounds().height);
 
-    // Configurar el sprite de la pantalla de derrota
     sf::Sprite perdisteSprite(perdisteTexture);
     perdisteSprite.setScale(window.getSize().x / perdisteSprite.getLocalBounds().width, window.getSize().y / perdisteSprite.getLocalBounds().height);
 
-    // Configurar el sprite de la pantalla de victoria
     sf::Sprite ganasteSprite(ganasteTexture);
     ganasteSprite.setScale(window.getSize().x / ganasteSprite.getLocalBounds().width, window.getSize().y / ganasteSprite.getLocalBounds().height);
 
-    // Inicializar el puntaje, las vidas y el contador de enemigos muertos
+    // Variables de juego
     int puntos = 0;
     int vidas = 3;
     int enemigosMuertos = 0;
 
-    // Configurar el temporizador
     sf::Clock tiempoEnPantalla;
     float tiempoLimite = 2.5f;
 
-    // Semilla para la generación de números aleatorios
     srand(static_cast<unsigned int>(time(0)));
 
-    // Definir posiciones predefinidas para los sprites
+    // Posiciones iniciales de enemigos inocentes
     sf::Vector2f posiciones[6] = {
-        sf::Vector2f(135.0f, 300.0f),  // Sprite arriba izquierda
-        sf::Vector2f(135.0f, 500.0f),  // Sprite abajo izquierda
-        sf::Vector2f(480.0f, 515.0f),  // Sprite abajo al centro
-        sf::Vector2f(480.0f, 80.0f),   // Sprite arriba al centro
-        sf::Vector2f(830.0f, 500.0f),  // Sprite abajo derecha
-        sf::Vector2f(830.0f, 300.0f)   // Sprite arriba derecha
+        sf::Vector2f(135.0f, 300.0f),
+        sf::Vector2f(135.0f, 500.0f),
+        sf::Vector2f(480.0f, 515.0f),
+        sf::Vector2f(480.0f, 80.0f),
+        sf::Vector2f(830.0f, 500.0f),
+        sf::Vector2f(830.0f, 300.0f)
     };
 
-    // Inicializar con una posición y textura aleatoria
+    // Instancia de la clase EnemigoInocente
     EnemigoInocente enemigo(enemigoTexture, inocenteTexture, posiciones);
 
-    // Bucle principal del juego
     bool juegoTerminado = false;
     sf::Clock tiempoPantallaFinal;
 
+    // Bucle principal del juego
     while (window.isOpen()) {
-        // Manejar eventos
         sf::Event event;
         while (window.pollEvent(event)) {
+            // Manejar eventos de la ventana principal
             if (event.type == sf::Event::Closed) {
                 window.close();
             }
             else if (event.type == sf::Event::MouseButtonPressed && event.mouseButton.button == sf::Mouse::Left) {
-                // Obtener la posición del ratón en el mundo
+                // Manejar clic izquierdo del mouse
                 sf::Vector2i mousePosition = sf::Mouse::getPosition(window);
                 sf::Vector2f worldPosition = window.mapPixelToCoords(mousePosition);
 
-                // Verificar si el clic ocurrió dentro del sprite
+                // Verificar si el clic ocurrió en un enemigo o inocente
                 if (enemigo.getSprite().getGlobalBounds().contains(worldPosition)) {
                     if (enemigo.getSprite().getTexture() == &enemigoTexture) {
-                        // Sumar puntos por matar al enemigo
                         puntos += 10;
-
-                        // Incrementar el contador de enemigos muertos
                         enemigosMuertos++;
-
-                        // Cambiar a una nueva posición y textura aleatoria
                         enemigo.cambiarPosicionYTexturaAleatoria();
-
-                        // Reiniciar el temporizador
                         tiempoEnPantalla.restart();
                     }
                     else if (enemigo.getSprite().getTexture() == &inocenteTexture) {
-                        // Restar 1 vida por matar al inocente
                         vidas--;
-
-                        // Cambiar a una nueva posición y textura aleatoria
                         enemigo.cambiarPosicionYTexturaAleatoria();
-
-                        // Reiniciar el temporizador
                         tiempoEnPantalla.restart();
                     }
                 }
             }
         }
 
-        // Actualizar la posición de la mira para que siga al ratón
+        // Actualizar posición de la mira según la posición del mouse
         sf::Vector2i mousePosition = sf::Mouse::getPosition(window);
         mira.setPosition(static_cast<float>(mousePosition.x), static_cast<float>(mousePosition.y));
 
-        // Verificar el tiempo transcurrido
+        // Verificar tiempo de exposición del enemigo en pantalla
         if (tiempoEnPantalla.getElapsedTime().asSeconds() > tiempoLimite) {
-            // Si el sprite es un enemigo, restar 1 vida
             if (enemigo.getSprite().getTexture() == &enemigoTexture) {
                 vidas--;
             }
 
-            // Cambiar a una nueva posición y textura aleatoria
             enemigo.cambiarPosicionYTexturaAleatoria();
-
-            // Reiniciar el temporizador
             tiempoEnPantalla.restart();
         }
 
-        // Limpiar la ventana
+        // Limpiar la ventana y dibujar elementos
         window.clear();
-
-        // Dibujar el fondo
         window.draw(fondoSprite);
-
-
-        // Dibujar los sprites en la ventana
         window.draw(enemigo.getSprite());
         mira.draw(window);
 
-        // Mostrar puntaje, vidas y enemigos muertos en la ventana
+        // Configurar fuente para el texto
         sf::Font Fuente;
         if (Fuente.loadFromFile("EncodeSans-VariableFont_wdth,wght.ttf")) {
+            // Dibujar texto en la ventana
             sf::Text textoPuntaje("Puntaje: " + std::to_string(puntos), Fuente, 30);
             textoPuntaje.setPosition(460, 710);
             window.draw(textoPuntaje);
@@ -186,11 +159,10 @@ int main() {
             textoEnemigosMuertos.setPosition(730, 710);
             window.draw(textoEnemigosMuertos);
 
-            // Mostrar mensaje de victoria al alcanzar 10 enemigos eliminados
+            // Mostrar pantalla de victoria o derrota según condiciones
             if (enemigosMuertos >= 10) {
                 window.draw(ganasteSprite);
             }
-            // Mostrar mensaje de derrota si se quedan sin vidas
             else if (vidas <= 0) {
                 window.draw(perdisteSprite);
             }
@@ -199,14 +171,13 @@ int main() {
         // Mostrar la ventana
         window.display();
 
-        // Cerrar la ventana si se quedan sin vidas o se alcanzan 10 enemigos eliminados
+        // Verificar condiciones de fin de juego y mostrar pantalla final
         if (vidas <= 0 || enemigosMuertos >= 10) {
             if (!juegoTerminado) {
                 tiempoPantallaFinal.restart();
                 juegoTerminado = true;
             }
 
-            // Mostrar la pantalla correspondiente
             if (enemigosMuertos >= 10) {
                 window.draw(ganasteSprite);
             }
@@ -214,7 +185,7 @@ int main() {
                 window.draw(perdisteSprite);
             }
 
-            // Mostrar la ventana durante 10 segundos después de la pantalla final
+            // Cerrar la ventana después de 10 segundos en la pantalla final
             if (tiempoPantallaFinal.getElapsedTime().asSeconds() > 10.0f) {
                 window.close();
             }
