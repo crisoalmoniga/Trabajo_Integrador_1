@@ -36,7 +36,7 @@ void Game::Go() {
 
 	//Tiempo de spawneo de los sprites - Setear a gusto
 	sf::Clock tiempoEnPantalla;
-	float tiempoLimite = 3.4f;
+	float tiempoLimite = 2.5f;
 
 	srand(static_cast<unsigned int>(time(0)));
 
