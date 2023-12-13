@@ -1,0 +1,29 @@
+Interfaz de inicio
+
+Titulo
+
+Instrucciones
+- Se apunta y dispara con el puntero del ratón
+- Cada disparo acertado a un enemigo suma 1 punto.
+- Cada disparo acertado a un inocente resta una vida y un punto.
+- Si el enemigo dispara resta una vida.
+- Se gana matando 10 enemigos.
+- Se pierde si gastamos 3 vidas.
+
+Disparar para empezar el juego.
+
+Gameplay
+
+Puntaje
+Enemigos muertos
+Vidas usadas
+
+Nombre estudiante
+
+Escenario de fondo
+
+- 5 puertas/Ventanas
+- Mira
+- Enemigos 3
+- GANADOR
+- PERDISTE
