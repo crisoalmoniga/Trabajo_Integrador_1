@@ -7,7 +7,7 @@ public:
 
 	// Variables de puntos, vidas y enemigos muertos
 	int puntos = 0;
-	int vidas = 3;
+	int vidas = 9;
 	int enemigosMuertos = 0;
 
 	// Posiciones iniciales de enemigos e inocentes
